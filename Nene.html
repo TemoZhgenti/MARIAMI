@@ -1,74 +1,511 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ka">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>მაცდური შეთავაზება</title>
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            text-align: center;
-            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            color: #fff;
-        }
-        .container {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 40px;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
-        }
-        .buttons {
-            margin-top: 20px;
-        }
-        button {
-            font-size: 18px;
-            padding: 10px 20px;
-            margin: 10px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        button:hover {
-            transform: scale(1.1);
-        }
-        #yesBtn {
-            background-color: #ff4d6d;
-            color: white;
-        }
-        #noBtn {
-            position: absolute;
-            background-color: #ffffff;
-            color: #ff4d6d;
-            border: 2px solid #ff4d6d;
-        }
-    </style>
-    <script>
-        function moveNoButton() {
-            var x = Math.random() * (window.innerWidth - 100);
-            var y = Math.random() * (window.innerHeight - 50);
-            document.getElementById("noBtn").style.left = x + "px";
-            document.getElementById("noBtn").style.top = y + "px";
-        }
-        function sayYes() {
-            document.body.innerHTML = "<h1 style='color:white;'>გადასარევი❤️</h1>";
-        }
-    </script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>რამდენად კარგად მიცნობ?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Georgian:wght@400;600;700&family=Noto+Sans+Georgian:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+  /* =========================================================
+     EDIT ME: change these values to personalize colors if you want
+     ========================================================= */
+  :root{
+    --wine: #6B1F2A;
+    --wine-deep: #4A1420;
+    --cream: #F7EEE3;
+    --blush: #D98E97;
+    --gold: #C9A45C;
+    --charcoal: #2B2320;
+    --leaf: #4C6B3D;
+    --leaf-light: #7A9B5E;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  html,body{
+    min-height:100vh;
+    background:
+      radial-gradient(circle at 15% 10%, rgba(201,164,92,0.12), transparent 45%),
+      radial-gradient(circle at 85% 90%, rgba(107,31,42,0.10), transparent 45%),
+      var(--cream);
+    font-family:'Noto Sans Georgian', sans-serif;
+    color:var(--charcoal);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+  }
+
+  .stage{
+    width:100%;
+    max-width:560px;
+    position:relative;
+  }
+
+  /* ---------- Vine progress ---------- */
+  .vine-wrap{
+    display:flex;
+    justify-content:center;
+    margin-bottom:18px;
+    height:54px;
+    align-items:flex-end;
+  }
+  .vine-wrap svg{ overflow:visible; }
+  .vine-path{
+    fill:none;
+    stroke:var(--leaf);
+    stroke-width:3;
+    stroke-linecap:round;
+    stroke-dasharray:400;
+    stroke-dashoffset:400;
+    transition:stroke-dashoffset 0.7s ease;
+  }
+  .leaf{
+    opacity:0;
+    transform-origin:center;
+    transition:opacity 0.5s ease, transform 0.5s ease;
+    transform:scale(0.3);
+  }
+  .leaf.on{ opacity:1; transform:scale(1); }
+  .grape{
+    fill:var(--wine);
+    opacity:0;
+    transition:opacity 0.6s ease 0.2s, transform 0.6s ease 0.2s;
+    transform:scale(0.2);
+    transform-origin:center;
+  }
+  .grape.on{ opacity:1; transform:scale(1); }
+
+  /* ---------- Card ---------- */
+  .card{
+    background:#fff;
+    border-radius:22px;
+    padding:40px 34px;
+    box-shadow:0 20px 50px rgba(74,20,32,0.14), 0 2px 8px rgba(74,20,32,0.08);
+    border:1px solid rgba(201,164,92,0.25);
+    position:relative;
+    overflow:hidden;
+  }
+  .card::before{
+    content:'';
+    position:absolute;
+    top:0; left:0; right:0;
+    height:5px;
+    background:linear-gradient(90deg, var(--wine), var(--gold), var(--wine));
+  }
+
+  .eyebrow{
+    font-size:13px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--gold);
+    font-weight:600;
+    margin-bottom:10px;
+  }
+
+  h1{
+    font-family:'Noto Serif Georgian', serif;
+    font-size:30px;
+    line-height:1.25;
+    color:var(--wine-deep);
+    margin-bottom:14px;
+  }
+
+  p.lede{
+    font-size:16px;
+    line-height:1.6;
+    color:#5a4d47;
+    margin-bottom:26px;
+  }
+
+  /* ---------- Name input (start screen) ---------- */
+  input[type="text"]{
+    width:100%;
+    padding:14px 16px;
+    border-radius:12px;
+    border:1.5px solid rgba(107,31,42,0.2);
+    font-family:'Noto Sans Georgian', sans-serif;
+    font-size:16px;
+    margin-bottom:20px;
+    background:#FBF6EF;
+    color:var(--charcoal);
+  }
+  input[type="text"]:focus{
+    outline:none;
+    border-color:var(--wine);
+  }
+
+  button.primary{
+    width:100%;
+    background:var(--wine);
+    color:#fff;
+    border:none;
+    padding:16px 20px;
+    border-radius:12px;
+    font-family:'Noto Sans Georgian', sans-serif;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    transition:background 0.2s ease, transform 0.15s ease;
+  }
+  button.primary:hover{ background:var(--wine-deep); }
+  button.primary:active{ transform:scale(0.98); }
+  button.primary:disabled{
+    background:#cbb;
+    cursor:not-allowed;
+  }
+
+  /* ---------- Question screen ---------- */
+  .q-count{
+    font-size:14px;
+    color:var(--gold);
+    font-weight:600;
+    margin-bottom:8px;
+  }
+
+  h2.question{
+    font-family:'Noto Serif Georgian', serif;
+    font-size:24px;
+    line-height:1.35;
+    color:var(--wine-deep);
+    margin-bottom:24px;
+  }
+
+  .options{ display:flex; flex-direction:column; gap:12px; margin-bottom:8px; }
+
+  .option{
+    text-align:left;
+    padding:15px 18px;
+    border-radius:12px;
+    border:1.5px solid rgba(107,31,42,0.18);
+    background:#FBF6EF;
+    font-family:'Noto Sans Georgian', sans-serif;
+    font-size:15.5px;
+    color:var(--charcoal);
+    cursor:pointer;
+    transition:border-color 0.2s ease, background 0.2s ease, transform 0.1s ease;
+  }
+  .option:hover{ border-color:var(--blush); background:#fff; }
+  .option.correct{
+    border-color:var(--leaf);
+    background:rgba(76,107,61,0.10);
+  }
+  .option.wrong{
+    border-color:#a33;
+    background:rgba(163,51,51,0.08);
+  }
+  .option:disabled{ cursor:default; }
+
+  .feedback{
+    min-height:24px;
+    font-size:14.5px;
+    font-weight:500;
+    margin:14px 0 10px 0;
+    color:var(--leaf);
+  }
+  .feedback.wrong{ color:#a33; }
+
+  /* ---------- Final screen ---------- */
+  .score-line{
+    font-family:'Noto Serif Georgian', serif;
+    font-size:20px;
+    color:var(--wine-deep);
+    margin-bottom:26px;
+  }
+
+  .compliments{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    margin-bottom:28px;
+  }
+
+  .compliment{
+    background:#FBF6EF;
+    border-left:3px solid var(--gold);
+    padding:16px 18px;
+    border-radius:0 12px 12px 0;
+    font-size:15.5px;
+    line-height:1.6;
+    opacity:0;
+    transform:translateY(8px);
+    animation:rise 0.6s ease forwards;
+  }
+  .compliment:nth-child(1){ animation-delay:0.1s; }
+  .compliment:nth-child(2){ animation-delay:0.5s; }
+  .compliment:nth-child(3){ animation-delay:0.9s; }
+  .compliment:nth-child(4){ animation-delay:1.3s; }
+
+  @keyframes rise{
+    to{ opacity:1; transform:translateY(0); }
+  }
+
+  .signoff{
+    font-family:'Noto Serif Georgian', serif;
+    font-size:17px;
+    color:var(--wine-deep);
+    text-align:right;
+    margin-top:8px;
+  }
+
+  .hidden{ display:none; }
+
+  @media (max-width:480px){
+    .card{ padding:30px 22px; }
+    h1{ font-size:25px; }
+    h2.question{ font-size:20px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.01ms !important; transition-duration:0.01ms !important; }
+  }
+</style>
 </head>
 <body>
-    <div class="container">
-        <h1>რახან შაბათ-კვირას არ მუშაობთ მეტი თავისუფალი იქნებით და დამითმობთ მაგ ძვირფას დროს? 😂😂</h1>
-        <div class="buttons">
-            <button id="yesBtn" onclick="sayYes()">კარგი დაგითმობთ</button>
-            <button id="noBtn" onmouseover="moveNoButton()">აუ ვერა</button>
-        </div>
+
+<div class="stage">
+
+  <div class="vine-wrap">
+    <svg width="320" height="54" viewBox="0 0 320 54">
+      <path class="vine-path" id="vinePath" d="M10,44 Q 55,10 100,40 T 190,38 T 280,36 T 310,20"></path>
+      <!-- leaves -->
+      <g id="leaf1" class="leaf"><ellipse cx="55" cy="16" rx="9" ry="5" fill="#7A9B5E" transform="rotate(-30 55 16)"/></g>
+      <g id="leaf2" class="leaf"><ellipse cx="100" cy="40" rx="9" ry="5" fill="#7A9B5E" transform="rotate(20 100 40)"/></g>
+      <g id="leaf3" class="leaf"><ellipse cx="150" cy="24" rx="9" ry="5" fill="#7A9B5E" transform="rotate(-15 150 24)"/></g>
+      <g id="leaf4" class="leaf"><ellipse cx="190" cy="38" rx="9" ry="5" fill="#7A9B5E" transform="rotate(25 190 38)"/></g>
+      <g id="leaf5" class="leaf"><ellipse cx="235" cy="22" rx="9" ry="5" fill="#7A9B5E" transform="rotate(-20 235 22)"/></g>
+      <g id="leaf6" class="leaf"><ellipse cx="280" cy="36" rx="9" ry="5" fill="#7A9B5E" transform="rotate(15 280 36)"/></g>
+      <!-- grape cluster appears at the end -->
+      <g id="grapeCluster">
+        <circle class="grape g1" cx="300" cy="26" r="5"></circle>
+        <circle class="grape g2" cx="306" cy="32" r="5"></circle>
+        <circle class="grape g3" cx="300" cy="38" r="5"></circle>
+        <circle class="grape g4" cx="308" cy="20" r="5"></circle>
+      </g>
+    </svg>
+  </div>
+
+  <div class="card">
+
+    <!-- ========================= START SCREEN ========================= -->
+    <div id="screen-start">
+      <div class="eyebrow">პატარა თამაში</div>
+      <!-- EDIT ME: change title/lede as you like -->
+      <h1>რამდენად კარგად მიცნობ ლამაზოო?</h1>
+      <p class="lede">
+        აბაა რამდენად კარგად გამიცანიიი 🍇
+      </p>
+      <input type="text" id="herName" placeholder="რას ფიქრობ ჩემზე">
+      <button class="primary" id="startBtn">დაწყება</button>
     </div>
+
+    <!-- ========================= QUIZ SCREEN ========================= -->
+    <div id="screen-quiz" class="hidden">
+      <div class="q-count" id="qCount">კითხვა 1 / 7</div>
+      <h2 class="question" id="qText">?</h2>
+      <div class="options" id="qOptions"></div>
+      <div class="feedback" id="qFeedback"></div>
+    </div>
+
+    <!-- ========================= FINAL SCREEN ========================= -->
+    <div id="screen-final" class="hidden">
+      <div class="eyebrow">შედეგი</div>
+      <div class="score-line" id="scoreLine"></div>
+      <div class="compliments" id="complimentsBox"></div>
+      <div class="signoff" id="signoff"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* =========================================================================
+   EDIT ME: This is the main place to personalize the quiz.
+   - Change herNameFallback if she skips the name field
+   - Edit each question's text, options, and correctIndex (0 = first option)
+   - Edit the compliments array (shown one by one at the end)
+   - Edit the signoff message
+   ========================================================================= */
+
+const herNameFallback = "ჩემო კარგო"; // used if she leaves the name field empty
+
+const questions = [
+  {
+    text: "რას მეძახიან მოფერებით", // EDIT ME
+    options: ["თუთა", "კომში", "ალუჩა"], // EDIT ME — put the real answer anywhere in the list
+    correctIndex: 0 // EDIT ME — index of the correct option (0, 1, or 2)
+  },
+  {
+    text: "რამდენი წლის ვარ და რამდენი ვარ სიმაღლეში", // EDIT ME
+    options: ["20 და 182", "16 და 171", "25 და 155"], // EDIT ME
+    correctIndex: 0 // EDIT ME
+  },
+  {
+    text: "სად გავიცანით ერთმანეთი?", // EDIT ME
+    options: ["ონლაინ", "მეგობრების მეშვეობით", "უნივერსიტეტში"], // EDIT ME
+    correctIndex: 0 // EDIT ME
+  },
+  {
+    text: "რომელი ქალაქში ვცხოვრობ?", // EDIT ME
+    options: ["ქუთაისი", "თბილისი", "ბათუმი"], // EDIT ME
+    correctIndex: 0 // EDIT ME
+  },
+  {
+    text: "რა მაშინებს ან მაბრაზებს ყველაზე მეტად?", // EDIT ME
+    options: ["ყველაფერი", "დაგვიანება და ლოდინი", "ხმაური და არეულობა"], // EDIT ME
+    correctIndex: 0 // EDIT ME
+  },
+  {
+    text: "რას ვფიქრობ შენზე?", // EDIT ME
+    options: ["ვახ ეს რა კაი გოგოა", "არ მომწონს", "არი რაა"], // EDIT ME
+    correctIndex: 0 // EDIT ME
+  },
+  {
+    text: "გადავათენებდი თუ არა კიდევ ბევრჯერ ვიზ იუ", // EDIT ME
+    options: ["რამდენიც გინდა", "არაა დავიძინებდიი", "მეტი საქმე არ მაქვს"], // EDIT ME
+    correctIndex: 0 // EDIT ME
+  }
+];
+
+const compliments = [
+  // EDIT ME — write real, specific things you appreciate about her
+  "მაგარი საყვარელი გოგო ხარ.",
+  "ასე შორს რო არ ვიყოთ გაასწორებდა",
+  "გავისეირნებდით ყოველღამე თუარა, ყოველ მეორე დღეს..",
+  "სპასიბა რომ იმ ღამეს არ გადამრთე და ტკბილი ლუკმა გავიჩითე :D"
+];
+
+const signoffMessage = "თუთააა 🍇"; // EDIT ME — sign it with your name
+
+/* ========================= app logic (no need to edit below) ========================= */
+
+let current = 0;
+let score = 0;
+let herName = herNameFallback;
+
+const screenStart = document.getElementById('screen-start');
+const screenQuiz = document.getElementById('screen-quiz');
+const screenFinal = document.getElementById('screen-final');
+
+document.getElementById('startBtn').addEventListener('click', () => {
+  const val = document.getElementById('herName').value.trim();
+  if (val) herName = val;
+  screenStart.classList.add('hidden');
+  screenQuiz.classList.remove('hidden');
+  renderQuestion();
+});
+
+let shuffledOptions = [];
+let shuffledCorrectIdx = 0;
+
+function shuffleArray(arr){
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i+1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function renderQuestion(){
+  const q = questions[current];
+  document.getElementById('qCount').textContent = `კითხვა ${current+1} / ${questions.length}`;
+  document.getElementById('qText').textContent = q.text;
+  document.getElementById('qFeedback').textContent = '';
+  document.getElementById('qFeedback').className = 'feedback';
+
+  const correctText = q.options[q.correctIndex];
+  shuffledOptions = shuffleArray(q.options);
+  shuffledCorrectIdx = shuffledOptions.indexOf(correctText);
+
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+
+  shuffledOptions.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.textContent = opt;
+    btn.addEventListener('click', () => selectAnswer(idx, btn));
+    optWrap.appendChild(btn);
+  });
+}
+
+function selectAnswer(idx, btnEl){
+  const allBtns = document.querySelectorAll('#qOptions .option');
+  allBtns.forEach(b => b.disabled = true);
+
+  const feedback = document.getElementById('qFeedback');
+
+  if (idx === shuffledCorrectIdx){
+    btnEl.classList.add('correct');
+    feedback.textContent = 'ზუსტად! 🎉';
+    feedback.className = 'feedback';
+    score++;
+    growVine(current);
+  } else {
+    btnEl.classList.add('wrong');
+    allBtns[shuffledCorrectIdx].classList.add('correct');
+    feedback.textContent = 'ახლოს იყავი — სწორი პასუხი მონიშნულია.';
+    feedback.className = 'feedback wrong';
+  }
+
+  setTimeout(() => {
+    current++;
+    if (current < questions.length){
+      renderQuestion();
+    } else {
+      showFinal();
+    }
+  }, 1300);
+}
+
+function growVine(index){
+  const path = document.getElementById('vinePath');
+  const totalSteps = questions.length;
+  const offset = 400 - (400 * ((index+1) / totalSteps));
+  path.style.strokeDashoffset = offset;
+
+  const leaf = document.getElementById('leaf' + (index+1));
+  if (leaf) leaf.classList.add('on');
+
+  if (index+1 === totalSteps){
+    setTimeout(() => {
+      document.querySelectorAll('.grape').forEach((g, i) => {
+        setTimeout(() => g.classList.add('on'), i*150);
+      });
+    }, 400);
+  }
+}
+
+function showFinal(){
+  screenQuiz.classList.add('hidden');
+  screenFinal.classList.remove('hidden');
+
+  document.getElementById('scoreLine').textContent =
+    `${herName}, გამოიცანი ${score} / ${questions.length} — ${scoreMessage(score, questions.length)}`;
+
+  const box = document.getElementById('complimentsBox');
+  box.innerHTML = '';
+  compliments.forEach(text => {
+    const div = document.createElement('div');
+    div.className = 'compliment';
+    div.textContent = text;
+    box.appendChild(div);
+  });
+
+  document.getElementById('signoff').textContent = signoffMessage;
+}
+
+function scoreMessage(score, total){
+  const ratio = score / total;
+  if (ratio === 1) return 'შენ ყველაფერი იცი ჩემზე! 🍇';
+  if (ratio >= 0.7) return 'საკმაოდ კარგად მიცნობ 💛';
+  if (ratio >= 0.4) return 'კარგი დასაწყისია — მეტიც გვექნება გასაზიარებელი';
+  return 'კიდევ ბევრი გვაქვს ერთმანეთის შესაცნობი, და ეს კარგია 💛';
+}
+</script>
+
 </body>
 </html>
