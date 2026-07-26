@@ -2,15 +2,12 @@
 <html lang="ka">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
 <title>რამდენად კარგად მიცნობ?</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Georgian:wght@400;600;700&family=Noto+Sans+Georgian:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 
-  /* =========================================================
-     EDIT ME: change these values to personalize colors if you want
-     ========================================================= */
   :root{
     --wine: #6B1F2A;
     --wine-deep: #4A1420;
@@ -22,10 +19,13 @@
     --leaf-light: #7A9B5E;
   }
 
-  *{ box-sizing:border-box; margin:0; padding:0; }
+  *{ box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+
+  html{ -webkit-text-size-adjust:100%; }
 
   html,body{
     min-height:100vh;
+    min-height:100dvh;
     background:
       radial-gradient(circle at 15% 10%, rgba(201,164,92,0.12), transparent 45%),
       radial-gradient(circle at 85% 90%, rgba(107,31,42,0.10), transparent 45%),
@@ -36,6 +36,7 @@
     align-items:center;
     justify-content:center;
     padding:24px;
+    overflow-x:hidden;
   }
 
   .stage{
@@ -49,10 +50,15 @@
     display:flex;
     justify-content:center;
     margin-bottom:18px;
-    height:54px;
+    height:auto;
     align-items:flex-end;
   }
-  .vine-wrap svg{ overflow:visible; }
+  .vine-wrap svg{
+    overflow:visible;
+    width:100%;
+    max-width:320px;
+    height:auto;
+  }
   .vine-path{
     fill:none;
     stroke:var(--leaf);
@@ -111,6 +117,7 @@
     line-height:1.25;
     color:var(--wine-deep);
     margin-bottom:14px;
+    word-wrap:break-word;
   }
 
   p.lede{
@@ -127,10 +134,12 @@
     border-radius:12px;
     border:1.5px solid rgba(107,31,42,0.2);
     font-family:'Noto Sans Georgian', sans-serif;
-    font-size:16px;
+    font-size:16px; /* keep >=16px to prevent iOS auto-zoom on focus */
     margin-bottom:20px;
     background:#FBF6EF;
     color:var(--charcoal);
+    -webkit-appearance:none;
+    appearance:none;
   }
   input[type="text"]:focus{
     outline:none;
@@ -149,6 +158,8 @@
     font-weight:600;
     cursor:pointer;
     transition:background 0.2s ease, transform 0.15s ease;
+    min-height:52px;
+    touch-action:manipulation;
   }
   button.primary:hover{ background:var(--wine-deep); }
   button.primary:active{ transform:scale(0.98); }
@@ -171,6 +182,7 @@
     line-height:1.35;
     color:var(--wine-deep);
     margin-bottom:24px;
+    word-wrap:break-word;
   }
 
   .options{ display:flex; flex-direction:column; gap:12px; margin-bottom:8px; }
@@ -186,8 +198,13 @@
     color:var(--charcoal);
     cursor:pointer;
     transition:border-color 0.2s ease, background 0.2s ease, transform 0.1s ease;
+    min-height:52px;
+    touch-action:manipulation;
+    -webkit-appearance:none;
+    appearance:none;
   }
   .option:hover{ border-color:var(--blush); background:#fff; }
+  .option:active{ transform:scale(0.98); }
   .option.correct{
     border-color:var(--leaf);
     background:rgba(76,107,61,0.10);
@@ -213,6 +230,7 @@
     font-size:20px;
     color:var(--wine-deep);
     margin-bottom:26px;
+    word-wrap:break-word;
   }
 
   .compliments{
@@ -232,6 +250,7 @@
     opacity:0;
     transform:translateY(8px);
     animation:rise 0.6s ease forwards;
+    word-wrap:break-word;
   }
   .compliment:nth-child(1){ animation-delay:0.1s; }
   .compliment:nth-child(2){ animation-delay:0.5s; }
@@ -252,10 +271,40 @@
 
   .hidden{ display:none; }
 
+  /* ---------- Mobile breakpoints ---------- */
   @media (max-width:480px){
-    .card{ padding:30px 22px; }
-    h1{ font-size:25px; }
-    h2.question{ font-size:20px; }
+    html,body{ padding:14px; align-items:flex-start; padding-top:max(20px, env(safe-area-inset-top)); }
+    .stage{ max-width:100%; }
+    .vine-wrap{ margin-bottom:12px; }
+    .vine-wrap svg{ max-width:260px; }
+    .card{ padding:26px 20px; border-radius:18px; }
+    .eyebrow{ font-size:12px; }
+    h1{ font-size:23px; margin-bottom:12px; }
+    p.lede{ font-size:15px; margin-bottom:20px; }
+    h2.question{ font-size:19px; margin-bottom:18px; }
+    .option{ font-size:15px; padding:14px 16px; }
+    .score-line{ font-size:18px; margin-bottom:20px; }
+    .compliment{ font-size:15px; padding:14px 16px; }
+    .signoff{ font-size:16px; }
+    button.primary{ padding:15px 18px; }
+  }
+
+  @media (max-width:360px){
+    .card{ padding:22px 16px; }
+    h1{ font-size:21px; }
+    h2.question{ font-size:18px; }
+    .vine-wrap svg{ max-width:220px; }
+  }
+
+  /* Landscape phones: reclaim vertical space */
+  @media (max-height:480px) and (orientation:landscape){
+    html,body{ align-items:flex-start; padding:12px; }
+    .vine-wrap{ margin-bottom:8px; }
+    .vine-wrap svg{ max-width:200px; }
+    .card{ padding:20px 22px; }
+    h1{ font-size:20px; margin-bottom:8px; }
+    p.lede{ margin-bottom:14px; }
+    h2.question{ margin-bottom:14px; }
   }
 
   @media (prefers-reduced-motion: reduce){
@@ -292,7 +341,6 @@
     <!-- ========================= START SCREEN ========================= -->
     <div id="screen-start">
       <div class="eyebrow">პატარა თამაში</div>
-      <!-- EDIT ME: change title/lede as you like -->
       <h1>რამდენად კარგად მიცნობ ლამაზოო?</h1>
       <p class="lede">
         აბაა რამდენად კარგად გამიცანიიი 🍇
@@ -321,65 +369,56 @@
 </div>
 
 <script>
-/* =========================================================================
-   EDIT ME: This is the main place to personalize the quiz.
-   - Change herNameFallback if she skips the name field
-   - Edit each question's text, options, and correctIndex (0 = first option)
-   - Edit the compliments array (shown one by one at the end)
-   - Edit the signoff message
-   ========================================================================= */
-
-const herNameFallback = "ჩემო კარგო"; // used if she leaves the name field empty
+const herNameFallback = "ჩემო კარგო";
 
 const questions = [
   {
-    text: "რას მეძახიან მოფერებით", // EDIT ME
-    options: ["თუთა", "კომში", "ალუჩა"], // EDIT ME — put the real answer anywhere in the list
-    correctIndex: 0 // EDIT ME — index of the correct option (0, 1, or 2)
+    text: "რას მეძახიან მოფერებით",
+    options: ["თუთა", "კომში", "ალუჩა"],
+    correctIndex: 0
   },
   {
-    text: "რამდენი წლის ვარ და რამდენი ვარ სიმაღლეში", // EDIT ME
-    options: ["20 და 182", "16 და 171", "25 და 155"], // EDIT ME
-    correctIndex: 0 // EDIT ME
+    text: "რამდენი წლის ვარ და რამდენი ვარ სიმაღლეში",
+    options: ["20 და 182", "16 და 171", "25 და 155"],
+    correctIndex: 0
   },
   {
-    text: "სად გავიცანით ერთმანეთი?", // EDIT ME
-    options: ["ონლაინ", "მეგობრების მეშვეობით", "უნივერსიტეტში"], // EDIT ME
-    correctIndex: 0 // EDIT ME
+    text: "სად გავიცანით ერთმანეთი?",
+    options: ["ონლაინ", "მეგობრების მეშვეობით", "უნივერსიტეტში"],
+    correctIndex: 0
   },
   {
-    text: "რომელი ქალაქში ვცხოვრობ?", // EDIT ME
-    options: ["ქუთაისი", "თბილისი", "ბათუმი"], // EDIT ME
-    correctIndex: 0 // EDIT ME
+    text: "რომელი ქალაქში ვცხოვრობ?",
+    options: ["ქუთაისი", "თბილისი", "ბათუმი"],
+    correctIndex: 0
   },
   {
-    text: "რა მაშინებს ან მაბრაზებს ყველაზე მეტად?", // EDIT ME
-    options: ["ყველაფერი", "დაგვიანება და ლოდინი", "ხმაური და არეულობა"], // EDIT ME
-    correctIndex: 0 // EDIT ME
+    text: "რა მაშინებს ან მაბრაზებს ყველაზე მეტად?",
+    options: ["ყველაფერი", "დაგვიანება და ლოდინი", "ხმაური და არეულობა"],
+    correctIndex: 0
   },
   {
-    text: "რას ვფიქრობ შენზე?", // EDIT ME
-    options: ["ვახ ეს რა კაი გოგოა", "არ მომწონს", "არი რაა"], // EDIT ME
-    correctIndex: 0 // EDIT ME
+    text: "რას ვფიქრობ შენზე?",
+    options: ["ვახ ეს რა კაი გოგოა", "არ მომწონს", "არი რაა"],
+    correctIndex: 0
   },
   {
-    text: "გადავათენებდი თუ არა კიდევ ბევრჯერ ვიზ იუ", // EDIT ME
-    options: ["რამდენიც გინდა", "არაა დავიძინებდიი", "მეტი საქმე არ მაქვს"], // EDIT ME
-    correctIndex: 0 // EDIT ME
+    text: "გადავათენებდი თუ არა კიდევ ბევრჯერ ვიზ იუ",
+    options: ["რამდენიც გინდა", "არაა დავიძინებდიი", "მეტი საქმე არ მაქვს"],
+    correctIndex: 0
   }
 ];
 
 const compliments = [
-  // EDIT ME — write real, specific things you appreciate about her
   "მაგარი საყვარელი გოგო ხარ.",
   "ასე შორს რო არ ვიყოთ გაასწორებდა",
   "გავისეირნებდით ყოველღამე თუარა, ყოველ მეორე დღეს..",
   "სპასიბა რომ იმ ღამეს არ გადამრთე და ტკბილი ლუკმა გავიჩითე :D"
 ];
 
-const signoffMessage = "თუთააა 🍇"; // EDIT ME — sign it with your name
+const signoffMessage = "თუთააა 🍇";
 
-/* ========================= app logic (no need to edit below) ========================= */
+/* ========================= app logic ========================= */
 
 let current = 0;
 let score = 0;
